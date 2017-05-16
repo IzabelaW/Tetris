@@ -1,19 +1,14 @@
 package com.example.izabelawojciak.tetris;
 
+import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Point;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.v7.app.AppCompatActivity;
-import android.view.Display;
 import android.view.View;
 
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
 
     private GameView gameView;
     private MediaPlayer mediaPlayer;
@@ -25,19 +20,13 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = getIntent();
         final boolean isMusicOn = intent.getBooleanExtra("IS_MUSIC_ON",true);
 
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-
         mediaPlayer = MediaPlayer.create(this, R.raw.tetris);
         mediaPlayer.setLooping(true);
-
-        int screenWidth = size.x;
-        int screenHeight = size.y;
 
         setContentView(R.layout.activity_main);
 
         if(savedInstanceState != null) {
+            this.gameView = (GameView) getLastNonConfigurationInstance();
             gameView.score = savedInstanceState.getInt("score");
             gameView.restoreInstanceState();
         }
@@ -100,12 +89,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("score", gameView.score);
-        EventBus.getDefault().postSticky(gameView);
-    }
-
-    @Subscribe(sticky = true)
-    public void restoreGameView(GameView gameView){
-        this.gameView = gameView;
     }
 
     @Override
@@ -115,36 +98,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        if (!EventBus.getDefault().isRegistered(this))
-            EventBus.getDefault().register(this);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        if (EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().unregister(this);
-        }
-        mediaPlayer.stop();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
-        }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().unregister(this);
-        }
-        mediaPlayer.stop();
+    public Object onRetainNonConfigurationInstance() {
+        return gameView;
     }
 
 }

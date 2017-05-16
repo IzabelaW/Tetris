@@ -5,7 +5,6 @@ import android.content.DialogInterface;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.media.SoundPool;
 import android.support.v7.app.AlertDialog;
 import android.util.AttributeSet;
 import android.view.View;
@@ -15,6 +14,7 @@ import android.widget.TextView;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -23,7 +23,7 @@ import java.util.Calendar;
  * Created by izabelawojciak on 06.05.2017.
  */
 
-public class GameView extends View {
+public class GameView extends View implements Serializable{
 
     //game actions
     public static final int ACTION_NONE = 0;
@@ -42,11 +42,6 @@ public class GameView extends View {
     public int score = 0;
     public boolean gameOver = false;
 
-    private SoundPool soundPool;
-    private int tetrisMusic;
-    private boolean isMusicOn;
-
-
 
     public GameView(Context context) {
         super(context);
@@ -62,27 +57,21 @@ public class GameView extends View {
 
     public void init (){
 
+        setBackgroundColor(android.graphics.Color.BLACK);
+        setFocusable(true);
+        setFocusableInTouchMode(true);
+        requestFocus();
+        paint = new Paint();
+
         if (restored){
 
-            setBackgroundColor(android.graphics.Color.BLACK);
-            setFocusable(true);
-            setFocusableInTouchMode(true);
-            requestFocus();
-
-            paint = new Paint();
             restored = false;
 
         } else {
 
-            setBackgroundColor(android.graphics.Color.BLACK);
-            setFocusable(true);
-            setFocusableInTouchMode(true);
-            requestFocus();
-
             gameGrid = new GameGrid(getContext());
-            paint = new Paint();
-
             gameGrid.init(getWidth(), getHeight());
+
         }
 
     }
@@ -101,7 +90,7 @@ public class GameView extends View {
 
     public void update(boolean isMusicOn){
 
-        if (!gameGrid.gameOver) {
+        if (!gameGrid.gameOver && hasFocus) {
 
             if (currentAction != ACTION_NONE) {
                 gameGrid.moveBlock(currentAction,isMusicOn);

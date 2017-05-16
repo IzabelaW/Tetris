@@ -58,14 +58,6 @@ public class GameGrid {
         pieceLockDown = soundPool.load(context, R.raw.piecelockdown,0);
     }
 
-    public void recreateGameGrid(){
-
-    }
-
-    public void saveGameGridState(){
-
-    }
-
     public void init(int w, int h){
 
         h -= mTop;
