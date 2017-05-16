@@ -9,11 +9,13 @@ import android.graphics.RectF;
 import android.media.AudioManager;
 import android.media.SoundPool;
 
+import java.io.Serializable;
+
 /**
  * Created by izabelawojciak on 06.05.2017.
  */
 
-public class GameGrid {
+public class GameGrid implements Serializable{
 
     //game actions
     public static final int ACTION_SHIFT_LEFT = 1;

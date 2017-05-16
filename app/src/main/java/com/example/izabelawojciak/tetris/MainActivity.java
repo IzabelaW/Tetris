@@ -26,7 +26,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         if(savedInstanceState != null) {
-            this.gameView = (GameView) getLastNonConfigurationInstance();
+            gameView = (GameView) savedInstanceState.getSerializable("GAME_VIEW");
             gameView.score = savedInstanceState.getInt("score");
             gameView.restoreInstanceState();
         }
@@ -89,6 +89,7 @@ public class MainActivity extends Activity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt("score", gameView.score);
+        outState.putSerializable("GAME_VIEW", gameView);
     }
 
     @Override
@@ -98,8 +99,14 @@ public class MainActivity extends Activity {
     }
 
     @Override
-    public Object onRetainNonConfigurationInstance() {
-        return gameView;
+    public void onStop() {
+        super.onStop();
+        mediaPlayer.stop();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mediaPlayer.stop();
+    }
 }

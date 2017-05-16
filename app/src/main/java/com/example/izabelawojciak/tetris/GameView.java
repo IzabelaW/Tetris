@@ -23,7 +23,7 @@ import java.util.Calendar;
  * Created by izabelawojciak on 06.05.2017.
  */
 
-public class GameView extends View implements Serializable{
+public class GameView extends View implements Serializable {
 
     //game actions
     public static final int ACTION_NONE = 0;
