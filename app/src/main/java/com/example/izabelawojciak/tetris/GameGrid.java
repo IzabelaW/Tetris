@@ -60,7 +60,7 @@ public class GameGrid implements Serializable{
         pieceLockDown = soundPool.load(context, R.raw.piecelockdown,0);
     }
 
-    public void init(int w, int h){
+    public void initBackground(int w, int h){
 
         h -= mTop;
 
@@ -70,13 +70,15 @@ public class GameGrid implements Serializable{
         mRight = mLeft + (mTileW * PLAYFIELD_COLS);
         mBottom = mTop + (mTileH * PLAYFIELD_ROWS);
 
+    }
+
+    public void init(){
         for (int i = 0; i < gameGrid.length; i++) {
             gameGrid[i] = Color.EMPTY;
         }
 
         currentBlock = nextBlock.getNextBlock();
         nextBlock.generateNextBlock();
-
     }
 
     public int update(boolean isMusicOn){

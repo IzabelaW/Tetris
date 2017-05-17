@@ -12,6 +12,7 @@ public class MainActivity extends Activity {
 
     private GameView gameView;
     private MediaPlayer mediaPlayer;
+    private Thread gameThread;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,14 +26,10 @@ public class MainActivity extends Activity {
 
         setContentView(R.layout.activity_main);
 
-        if(savedInstanceState != null) {
-            gameView = (GameView) savedInstanceState.getSerializable("GAME_VIEW");
+        gameView = (GameView) findViewById(R.id.gameView);
+
+        if (savedInstanceState != null)
             gameView.score = savedInstanceState.getInt("score");
-            gameView.restoreInstanceState();
-        }
-        else {
-            gameView = (GameView) findViewById(R.id.gameView);
-        }
 
         gameView.post(new Runnable() {
             @Override
@@ -65,7 +62,7 @@ public class MainActivity extends Activity {
             mediaPlayer.start();
 
 
-        final Thread gameThread = new Thread(new Runnable() {
+        gameThread = new Thread(new Runnable() {
             @Override
             public void run() {
                 final Handler handler = new Handler(Looper.getMainLooper());
@@ -88,8 +85,9 @@ public class MainActivity extends Activity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+
         outState.putInt("score", gameView.score);
-        outState.putSerializable("GAME_VIEW", gameView);
+
     }
 
     @Override
@@ -99,14 +97,39 @@ public class MainActivity extends Activity {
     }
 
     @Override
+    public void onPause(){
+        super.onPause();
+
+        mediaPlayer.pause();
+
+        try {
+            gameThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public void onStop() {
         super.onStop();
         mediaPlayer.stop();
+
+        try {
+            gameThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         mediaPlayer.stop();
+
+        try {
+            gameThread.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

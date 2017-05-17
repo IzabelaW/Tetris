@@ -5,6 +5,8 @@ import android.content.DialogInterface;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.v7.app.AlertDialog;
 import android.util.AttributeSet;
 import android.view.View;
@@ -63,16 +65,12 @@ public class GameView extends View implements Serializable {
         requestFocus();
         paint = new Paint();
 
-        if (restored){
-
-            restored = false;
-
-        } else {
-
+        if (!restored) {
             gameGrid = new GameGrid(getContext());
-            gameGrid.init(getWidth(), getHeight());
-
+            gameGrid.init();
         }
+
+        gameGrid.initBackground(getWidth(),getHeight());
 
     }
 
@@ -83,7 +81,7 @@ public class GameView extends View implements Serializable {
         paint.setColor(Color.WHITE);
         paint.setTextSize(60);
         paint.setFakeBoldText(true);
-        canvas.drawText("Score: " + score, getWidth() - 300, getHeight() / 25, paint);
+        canvas.drawText("Score: " + score, getWidth() - 300, getHeight() / 20, paint);
 
         gameGrid.paintGrid(canvas,paint);
     }
@@ -137,10 +135,6 @@ public class GameView extends View implements Serializable {
         }
     }
 
-    public void restoreInstanceState(){
-        restored = true;
-    }
-
     public void setGameFocus(boolean hasFocus){
         this.hasFocus = hasFocus;
     }
@@ -161,4 +155,52 @@ public class GameView extends View implements Serializable {
         currentAction = ACTION_SHIFT_RIGHT;
     }
 
+    @Override
+    public Parcelable onSaveInstanceState() {
+        Parcelable superState = super.onSaveInstanceState();
+        SavedState ss = new SavedState(superState);
+        ss.gameGrid = gameGrid;
+        return ss;
+    }
+
+    @Override
+    public void onRestoreInstanceState(Parcelable state) {
+        restored = true;
+        SavedState ss = (SavedState) state;
+        super.onRestoreInstanceState(ss.getSuperState());
+        gameGrid = ss.gameGrid;
+    }
+
+
+    private static class SavedState extends BaseSavedState {
+        GameGrid gameGrid; //this will store the current value from ValueBar
+
+        SavedState(Parcelable superState) {
+            super(superState);
+        }
+
+        private SavedState(Parcel in) {
+            super(in);
+            gameGrid = (GameGrid) in.readValue(GameGrid.class.getClassLoader());
+        }
+
+        @Override
+        public void writeToParcel(Parcel out, int flags) {
+            super.writeToParcel(out, flags);
+            out.writeValue(gameGrid);
+        }
+
+        public static final Parcelable.Creator<SavedState> CREATOR
+                = new Parcelable.Creator<SavedState>() {
+            public SavedState createFromParcel(Parcel in) {
+                return new SavedState(in);
+            }
+
+            public SavedState[] newArray(int size) {
+                return new SavedState[size];
+            }
+        };
+    }
+
 }
+

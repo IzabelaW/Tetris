@@ -2,13 +2,14 @@ package com.example.izabelawojciak.tetris;
 
 import android.content.Context;
 
+import java.io.Serializable;
 import java.util.Random;
 
 /**
  * Created by izabelawojciak on 11.05.2017.
  */
 
-public class TetrisNextBlock {
+public class TetrisNextBlock implements Serializable {
 
     private final TetrisBlockI tetrisBlockI;
     private final TetrisBlockT tetrisBlockT;

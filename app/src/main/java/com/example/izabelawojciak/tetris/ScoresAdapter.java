@@ -1,7 +1,6 @@
 package com.example.izabelawojciak.tetris;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,7 +47,6 @@ public class ScoresAdapter extends RecyclerView.Adapter<ScoresAdapter.ViewHolder
 
     @Override
     public int getItemCount() {
-        Log.println(Log.INFO, "SIZE", String.valueOf(scores.size()));
         return scores.size();
     }
 

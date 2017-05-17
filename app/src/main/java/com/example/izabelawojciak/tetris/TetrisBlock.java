@@ -3,11 +3,13 @@ package com.example.izabelawojciak.tetris;
 import android.content.Context;
 import android.graphics.Bitmap;
 
+import java.io.Serializable;
+
 /**
  * Created by izabelawojciak on 11.05.2017.
  */
 
-public abstract class TetrisBlock {
+public abstract class TetrisBlock implements Serializable {
 
     public static final int BLOCKGRIDWIDTH = 4;
     public static final int BLOCKGRIDHEIGHT = 4;
